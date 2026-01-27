@@ -1,7 +1,7 @@
 // ----------------- HARDCODED PRODUCTS -----------------
 let products = [
   {
-    name: "Care and maintenance class X PDF",
+    name: "care.pdf,
     file: "care.pdf",
     image: "WhatsApp Image 2026-01-26 at 6.33.17 PM.jpeg"
   }
@@ -58,4 +58,5 @@ renderProducts();
     requestAnimationFrame(loop);
   })();
 })();
+
 
