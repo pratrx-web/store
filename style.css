@@ -1,0 +1,89 @@
+@font-face {
+  font-family: 'FreeFire';
+  src: url('GFF-Latin-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* base sizing */
+html { font-size: 13px; }
+@media (max-width: 640px){ html { font-size: 12px; } }
+
+* { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-user-select:none; }
+
+/* body + font */
+body {
+  font-family: 'FreeFire', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: #000;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* canvas background */
+canvas#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  pointer-events: none;
+}
+
+/* header/footer */
+header, footer {
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+/* logo style (image already has drop-shadow via inline class) */
+#siteLogo { display:block; }
+
+/* product card */
+.product-card {
+  background: #0a0a0a;
+  border: 1px solid #facc15;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 12px #facc15;
+}
+
+/* product image (smaller) */
+.product-card img {
+  height: 90px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+/* product title and button */
+.product-card h3 {
+  font-size: 0.85rem;
+  color: #facc15;
+  margin-bottom: 6px;
+}
+.product-card a {
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  background: #facc15;
+  color: #000;
+  border-radius: 999px;
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* modal */
+#adminModal { padding: 12px; }
+
+/* small responsive tweaks */
+@media (max-width: 420px) {
+  .product-card img { height: 70px; }
+  #siteLogo { height: 36px; }
+}

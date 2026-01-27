@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PRATRX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-black text-white relative overflow-x-hidden">
+
+<!-- Canvas Background -->
+<canvas id="bg-canvas" class="fixed inset-0 -z-10"></canvas>
+
+<!-- Header -->
+<header class="py-4 border-b border-yellow-400 flex items-center justify-between px-4 md:px-10">
+  <img src="WhatsApp Image 2026-01-26 at 6.33.17 PM.jpeg" alt="" class="h-10 drop-shadow-[0_0_12px_#facc15]">
+
+  <div class="flex gap-3 text-xs">
+    <button id="openAdmin" class="text-yellow-400 underline">Admin Login</button>
+    <button id="logoutBtn" class="hidden text-red-400 underline">Logout</button>
+  </div>
+</header>
+
+<!-- Main Product Grid -->
+<main class="max-w-6xl mx-auto p-4">
+  <h2 class="text-yellow-400 text-xl mb-4 text-center">Products</h2>
+  <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</main>
+
+<!-- Footer -->
+<footer class="py-3 text-center text-gray-400 text-xs border-t border-yellow-400">
+  © PRATRX
+</footer>
+
+<!-- ADMIN LOGIN MODAL -->
+<div id="adminModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+  <form id="login-form" class="bg-black border border-yellow-400 p-6 rounded w-80 flex flex-col gap-3">
+    <h3 class="text-yellow-400 text-center text-lg font-semibold">Admin Login</h3>
+    <input id="username" placeholder="Username"
+           class="w-full p-2 text-xs bg-transparent border border-yellow-400 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+    <input id="password" type="password" placeholder="Password"
+           class="w-full p-2 text-xs bg-transparent border border-yellow-400 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+    <button type="submit"
+            class="w-full p-2 text-xs bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">LOGIN</button>
+  </form>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<section id="dashboard" class="hidden max-w-4xl mx-auto p-6 bg-black/80 border border-yellow-400 rounded mt-6">
+  <h3 class="text-yellow-400 text-sm mb-4 font-semibold">ADMIN PANEL</h3>
+
+  <!-- Add Product Form -->
+  <form id="add-product-form" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+    <input id="product-name" placeholder="Product Name"
+           class="p-2 text-xs border border-yellow-400 bg-transparent rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+    <input id="product-file" placeholder="File Link"
+           class="p-2 text-xs border border-yellow-400 bg-transparent rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+    
+    <!-- Product Image with Drop Area -->
+    <div class="relative border border-yellow-400 rounded p-2 flex flex-col items-center justify-center hover:border-dashed hover:border-yellow-500">
+      <input id="product-image" placeholder="Image URL or Drop File"
+             class="w-full p-2 text-xs bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow-400">
+      <span class="text-yellow-400 text-[10px] mt-1">Drag & Drop or type URL</span>
+    </div>
+
+    <button type="submit"
+            class="sm:col-span-3 p-2 text-xs bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">ADD PRODUCT</button>
+  </form>
+
+  <!-- Product List (Admin) -->
+  <div id="product-list" class="space-y-2"></div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
