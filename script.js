@@ -1,3 +1,34 @@
+// ----------------- HARDCODED PRODUCTS -----------------
+let products = [
+  {
+    name: "Care PDF",
+    file: "care.pdf",
+    image: "WhatsApp Image 2026-01-26 at 6.33.17 PM.jpeg"
+  }
+];
+
+// ----------------- FUNCTIONS -----------------
+function renderProducts() {
+  const container = document.getElementById("productContainer");
+  container.innerHTML = "";
+  products.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "bg-white text-black rounded p-3 shadow-md";
+
+    const imgSrc = encodeURI("assets/" + p.image);
+    const fileSrc = encodeURI("assets/" + p.file);
+
+    div.innerHTML = `
+      <img src="${imgSrc}" alt="${p.name}" class="w-full h-48 object-cover mb-2 rounded">
+      <h3 class="text-lg font-bold mb-2">${p.name}</h3>
+      <a href="${fileSrc}" download class="bg-black text-white px-3 py-2 rounded hover:bg-gray-800">Download</a>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Call render once
+renderProducts();
 // /js/main.js
 
 const ADMIN_USER = "admin";
@@ -181,3 +212,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
