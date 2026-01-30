@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pratrx— Download Hub</title>
+
+<!-- Google Fonts (GFF-like) -->
+<link href="https://fonts.googleapis.com/css2?family=GFS+Neohellenic:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --bg1:#050510;
+  --bg2:#0b0f2a;
+  --accent:#00ffe0;
+  --accent2:#7f5cff;
+  --text:#e8eaff;
+  --muted:#9aa0ff;
+  --glass:rgba(255,255,255,0.08);
+  --blur:blur(18px);
+  --radius:18px;
+  --transition:0.3s ease;
+}
+[data-theme="light"] {
+  --bg1:#f4f6ff;
+  --bg2:#e8ebff;
+  --text:#0b0f2a;
+  --glass:rgba(255,255,255,0.6);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'GFS Neohellenic',sans-serif;
+  color:var(--text);
+  background:linear-gradient(120deg,var(--bg1),var(--bg2));
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background:linear-gradient(270deg,#00ffe033,#7f5cff33,#00ffe033);
+  background-size:600% 600%;
+  animation:gradientMove 18s ease infinite;
+  z-index:-3;
+}
+@keyframes gradientMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+canvas#particles, canvas#equalizer{position:fixed;inset:0;z-index:-2;pointer-events:none;}
+
+.container{max-width:1100px;margin:auto;padding:2rem 1rem 5rem;}
+.main-card{
+  background:var(--glass);
+  backdrop-filter:var(--blur);
+  border-radius:var(--radius);
+  padding:2rem;
+  box-shadow:0 0 40px #00000055;
+  animation:fadeIn 1s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.logo{font-family:'GFS Neohellenic',sans-serif;font-size:2rem;text-align:center;color:var(--accent);text-shadow:0 0 15px var(--accent);}
+.desc{text-align:center;margin:0.5rem 0 1.5rem;color:var(--muted);}
+.controls{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;}
+.controls input{flex:1;padding:0.7rem 1rem;border-radius:12px;border:none;outline:none;}
+.filter-btn{padding:0.6rem 1rem;border-radius:999px;border:none;cursor:pointer;background:var(--glass);color:var(--text);transition:var(--transition);}
+.filter-btn.active,.filter-btn:hover{background:var(--accent2);}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;}
+.card{
+  background:var(--glass);
+  backdrop-filter:var(--blur);
+  border-radius:var(--radius);
+  padding:1rem;
+  position:relative;
+  transition:transform 0.3s ease,box-shadow 0.3s ease;
+}
+.card:hover{box-shadow:0 0 20px var(--accent2);}
+.card h3{font-size:1rem;margin-bottom:0.3rem;}
+.card .category{font-size:0.7rem;opacity:0.7;}
+.card-actions{display:flex;justify-content:space-between;margin-top:0.7rem;}
+.icon-btn{background:none;border:none;color:var(--accent);font-size:1.2rem;cursor:pointer;}
+.badge{position:absolute;top:10px;right:10px;background:var(--accent2);font-size:0.7rem;padding:0.3rem 0.5rem;border-radius:999px;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--glass);padding:0.7rem 1rem;border-radius:999px;opacity:0;transition:var(--transition);}
+.toast.show{opacity:1;}
+#scrollTop{position:fixed;bottom:20px;right:20px;background:var(--accent);border:none;border-radius:50%;width:44px;height:44px;font-size:1.3rem;cursor:pointer;display:none;}
+footer{text-align:center;padding:2rem 0 1rem;opacity:0.7;}
+[data-tilt]{transform-style:preserve-3d;transition:transform 0.2s ease;}
+[data-tilt]:hover{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.05);}
+</style>
+</head>
+<body data-theme="dark">
+
+<canvas id="particles"></canvas>
+<canvas id="equalizer"></canvas>
+
+<div class="container">
+  <div class="main-card" aria-label="Download links container">
+    <div class="logo">Pratrx</div>
+    <div class="desc">Futuristic download hub — fast, clean, offline-ready</div>
+
+    <div class="controls">
+      <input id="search" type="text" placeholder="Search downloads..." aria-label="Search downloads">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="Notes">Notes</button>
+      <button class="filter-btn" data-cat="PDFs">PDFs</button>
+      <button class="filter-btn" data-cat="Tools">Tools</button>
+      <button class="filter-btn" data-cat="Videos">Videos</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <button onclick="toggleAdmin()" style="margin-top:1rem;background:var(--accent2);border:none;padding:0.5rem 1rem;border-radius:12px;cursor:pointer;">Admin Panel</button>
+  </div>
+</div>
+
+<button id="scrollTop" aria-label="Scroll to top"><i class='bx bx-up-arrow-alt'></i></button>
+<div class="toast" id="toast"></div>
+<footer>© <span id="year"></span> Pratrx • Built with ❤️</footer>
+
+<!-- ADMIN MODAL (same as previous) -->
+<div id="adminModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;overflow:auto;">
+  <div style="max-width:800px;margin:5% auto;background:var(--glass);backdrop-filter:var(--blur);padding:2rem;border-radius:18px;">
+    <h2 style="text-align:center;color:var(--accent)">Admin Panel</h2>
+    <button onclick="closeAdmin()" style="float:right;font-size:1.2rem;background:none;border:none;color:var(--accent);cursor:pointer;">&times;</button>
+    <div id="loginDiv">
+      <input id="adminPasswordInput" type="password" placeholder="Enter password" style="width:100%;padding:0.5rem;margin-top:1rem;border-radius:12px;border:none;outline:none;">
+      <button onclick="loginAdmin()" style="margin-top:0.5rem;padding:0.5rem 1rem;border-radius:12px;border:none;background:var(--accent2);color:#000;cursor:pointer;">Login</button>
+    </div>
+    <div id="adminPanel" style="display:none;">
+      <button onclick="addLinkPrompt()" style="margin-top:1rem;background:var(--accent2);border:none;padding:0.5rem 1rem;border-radius:12px;cursor:pointer;">Add Link</button>
+      <div id="adminLinksList" style="margin-top:1rem;"></div>
+      <button onclick="exportLinks()" style="margin-top:1rem;background:var(--accent2);border:none;padding:0.5rem 1rem;border-radius:12px;cursor:pointer;">Export JSON</button>
+      <input type="file" id="importFile" style="margin-top:1rem;" onchange="importLinks(event)">
+    </div>
+  </div>
+</div>
+
+<script>
+// CONFIG
+const ADMIN_PASSWORD="pratosh8853";
+
+// STATE
+let links=JSON.parse(localStorage.getItem("links")||"[]");
+let favorites=JSON.parse(localStorage.getItem("favorites")||"[]");
+let downloads=JSON.parse(localStorage.getItem("downloads")||"{}");
+let currentFilter="all";
+
+// HELPERS
+const grid=document.getElementById("grid");
+const toast=document.getElementById("toast");
+document.getElementById("year").textContent=new Date().getFullYear();
+function showToast(msg){toast.textContent=msg;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),2000);}
+
+// RENDER
+function render(){
+  grid.innerHTML="";
+  const q=document.getElementById("search").value.toLowerCase();
+  const filtered=links.filter(l=>(currentFilter==="all"||l.category===currentFilter)&&l.title.toLowerCase().includes(q));
+  if(!filtered.length){grid.innerHTML="<p style='opacity:.6'>No links found.</p>";return;}
+  filtered.forEach(l=>{
+    const card=document.createElement("div");
+    card.className="card";card.setAttribute("data-tilt","");
+    card.innerHTML=`<span class="badge">${downloads[l.id]||0} ⬇</span><h3>${l.title}</h3><div class="category">${l.category}</div>
+      <div class="card-actions">
+        <button class="icon-btn" title="Open link"><i class='bx bx-link-external'></i></button>
+        <button class="icon-btn" title="Copy link"><i class='bx bx-copy'></i></button>
+        <button class="icon-btn" title="Favorite"><i class='bx ${favorites.includes(l.id)?"bxs-star":"bx-star"}'></i></button>
+      </div>`;
+    const [openBtn,copyBtn,favBtn]=card.querySelectorAll("button");
+    openBtn.onclick=()=>{window.open(l.url,"_blank");downloads[l.id]=(downloads[l.id]||0)+1;localStorage.setItem("downloads",JSON.stringify(downloads));render();};
+    copyBtn.onclick=()=>{navigator.clipboard.writeText(l.url);showToast("Link copied");};
+    favBtn.onclick=()=>{favorites.includes(l.id)?favorites=favorites.filter(f=>f!==l.id):favorites.push(l.id);localStorage.setItem("favorites",JSON.stringify(favorites));render();};
+    grid.appendChild(card);
+  });
+}
+
+// FILTER + SEARCH
+document.getElementById("search").oninput=render;
+document.querySelectorAll(".filter-btn").forEach(b=>{b.onclick=()=>{document.querySelectorAll(".filter-btn").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentFilter=b.dataset.cat;render();};});
+
+// SCROLL TOP
+window.onscroll=()=>{document.getElementById("scrollTop").style.display=window.scrollY>200?"block":"none";};
+document.getElementById("scrollTop").onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+
+// ADMIN (same as previous)
+function toggleAdmin(){document.getElementById("adminModal").style.display="block";}
+function closeAdmin(){document.getElementById("adminModal").style.display="none";}
+function loginAdmin(){const pass=document.getElementById("adminPasswordInput").value;if(pass===ADMIN_PASSWORD){document.getElementById("loginDiv").style.display="none";document.getElementById("adminPanel").style.display="block";renderAdminLinks();}else showToast("Wrong password");}
+function addLinkPrompt(){const title=prompt("Title:");const url=prompt("URL:");const category=prompt("Category:");if(!title||!url||!category)return;const id=Date.now().toString();links.push({id,title,url,category});localStorage.setItem("links",JSON.stringify(links));render();renderAdminLinks();showToast("Link added");}
+function renderAdminLinks(){const list=document.getElementById("adminLinksList");list.innerHTML="";links.forEach(l=>{const div=document.createElement("div");div.style.background="var(--glass)";div.style.backdropFilter="var(--blur)";div.style.margin="0.3rem 0";div.style.padding="0.5rem";div.style.borderRadius="12px";div.innerHTML=`${l.title} [${l.category}] <button onclick="editLink('${l.id}')" style="margin-left:0.5rem;">✎</button> <button onclick="deleteLink('${l.id}')" style="margin-left:0.5rem;">🗑</button>`;list.appendChild(div);});}
+function editLink(id){const l=links.find(x=>x.id===id);const title=prompt("Title:",l.title);const url=prompt("URL:",l.url);const category=prompt("Category:",l.category);if(title&&url&&category){l.title=title;l.url=url;l.category=category;localStorage.setItem("links",JSON.stringify(links));render();renderAdminLinks();showToast("Link updated");}}
+function deleteLink(id){if(confirm("Delete this link?")){links=links.filter(x=>x.id!==id);localStorage.setItem("links",JSON.stringify(links));render();renderAdminLinks();showToast("Deleted");}}
+function exportLinks(){const a=document.createElement("a");a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(links));a.download="links.json";a.click();}
+function importLinks(e){const file=e.target.files[0];const reader=new FileReader();reader.onload=function(){try{links=JSON.parse(reader.result);localStorage.setItem("links",JSON.stringify(links));render();renderAdminLinks();showToast("Imported");}catch{showToast("Invalid JSON")}};reader.readAsText(file);}
+
+// PARTICLES
+const canvas=document.getElementById("particles");const ctx=canvas.getContext("2d");let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight;window.onresize=()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;initParticles();};
+let particles=[];function initParticles(){const count=Math.min(80,Math.floor(w*h/20000));particles=[];for(let i=0;i<count;i++){particles.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2+1,speed:Math.random()*0.5+0.2});}}
+function updateParticles(){ctx.clearRect(0,0,w,h);ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent');particles.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.y-=p.speed;if(p.y<0)p.y=h;});requestAnimationFrame(updateParticles);}
+initParticles();updateParticles();
+
+// EQUALIZER
+const eqCanvas=document.getElementById("equalizer");const eqCtx=eqCanvas.getContext("2d");eqCanvas.width=w;eqCanvas.height=h;
+let bars=[];function initEqualizer(){bars=[];let n=40;for(let i=0;i<n;i++){bars.push({x:i*(w/n),width:w/n*0.6,height:Math.random()*h});}}
+function updateEqualizer(){eqCtx.clearRect(0,0,w,h);bars.forEach(b=>{b.height=Math.random()*h*0.4+20;eqCtx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent2');eqCtx.fillRect(b.x,h-b.height,b.width,b.height);});requestAnimationFrame(updateEqualizer);}
+initEqualizer();updateEqualizer();
+
+// INIT
+if(!links.length){links=[{id:"1",title:"Sample PDF",url:"https://example.com",category:"PDFs"}];localStorage.setItem("links",JSON.stringify(links));}
+render();
+</script>
+</body>
+</html>
